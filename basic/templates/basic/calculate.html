@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Calculte</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="result">
+
+    </div>
+
+    <script type="text/javascript">
+      function make_request(){
+        // set  form into variable
+         let form = $("#number-form");
+         // ends here ~ set  form into variable
+
+         // serialize form and extract form data
+      	  let formObject = {}
+          form.serializeArray().map(function(x){formObject[x.name] = x.value;})
+         // ends here ~ serialize form and extract form data
+
+         let ajaxData = formObject;
+         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+         $.ajax({
+             type: "POST",
+             dataType: "json",
+             headers: { "X-CSRFToken": csrftoken },
+             url: "/",
+             data: ajaxData,
+             success: function(resp,textStatus,xhr) {
+                document.getElementById('result').append(resp.responseData);
+             },
+             error: function(resp,textStatus,errorThrown) {
+                 document.getElementById('result').append(resp.responseData);
+             }
+         });
+      }
+
+    </script>
+
+    <form id="number-form" >
+      {% csrf_token %}
+      <input type="number" name="x" value="">
+      <input type="number" name="n" value="10" readonly>
+      <button type="button" onclick="make_request()">Calculate</button>
+    </form>
+
+
+  </body>
+</html>
